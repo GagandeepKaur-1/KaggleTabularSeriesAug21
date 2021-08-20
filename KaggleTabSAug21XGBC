@@ -1,0 +1,82 @@
+import numpy as np
+import pandas as pd
+import os
+import warnings
+warnings.filterwarnings("ignore")
+#import gc
+#gc.collect()
+# import tensorflow-gpu
+
+os.getcwd()
+
+os.chdir("C:\\Users\\gurme\\OneDrive\\Documents\\Documents\\Gagan\\DS\\DS\\Python\\Kaggle Comps\\Tabular Series-Aug")
+
+train=pd.read_csv("train.csv")
+
+test=pd.read_csv("test.csv")
+
+ss=pd.read_csv("sample_submission.csv")
+
+train.shape
+
+test.shape
+
+train.columns
+
+test.columns
+
+train.select_dtypes("object")
+
+train.select_dtypes("int64")
+
+train.select_dtypes("float")
+
+test.select_dtypes("object")
+
+test.select_dtypes("int64")
+
+test.select_dtypes("float")
+
+target=train["loss"]
+
+train.drop(["loss"],1,inplace=True)
+
+from sklearn.model_selection import train_test_split
+
+
+train_x,val_x,target_y,val_y=train_test_split(train,target,test_size=0.80,random_state=2)
+
+from sklearn.linear_model import LogisticRegression
+
+Softreg=LogisticRegression(multi_class="multinomial",solver="lbfgs")
+
+Softreg.fit(train_x,target_y)
+
+preds=Softreg.predict(val_x)
+
+from sklearn.metrics import accuracy_score
+
+accuracy_score(val_y,preds)
+
+from xgboost import XGBClassifier
+
+xgbc=XGBClassifier()
+
+xgbc.fit(train_x,target_y)
+
+preds=xgbc.predict(val_x)
+
+from sklearn.metrics import accuracy_score
+
+accuracy_score(val_y,preds)
+#accuracy_score(val_y,xgbc.predict(val_x)
+
+train_x.shape
+train_x.head()
+
+predictions_xgbc=xgbc.predict(test)
+
+predictions_df=pd.DataFrame({"id":test["id"],"loss":predictions_xgbc})
+
+predictions_df.to_csv("Submission_Attempt3.csv")
+
